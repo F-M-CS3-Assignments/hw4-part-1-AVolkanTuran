@@ -25,9 +25,9 @@ void selection_sort(vector<int>& input){
     if(input.size()==0){
         return;
     }
-    for(int i = 0; i<input.size()-1; i++){
+    for(size_t i = 0; i<input.size()-1; i++){
         int minIndex = i;
-        for(int j = i+1; j<input.size(); j++){
+        for(size_t j = i+1; j<input.size(); j++){
             if(input.at(j)<input.at(minIndex)){
                 minIndex = j;
             }
@@ -59,7 +59,7 @@ vector<int> biggest_divisible_conglomerate_finder(vector<int> input){
         vector<int> left = {input.at(i)};
 
         //Finds the position of the next number divisible the current element we are checking at i
-        int j = i+1;
+        size_t j = i+1;
         while(j<input.size() && input.at(j)%input.at(i)!=0){
             j++;
         }
@@ -73,7 +73,7 @@ vector<int> biggest_divisible_conglomerate_finder(vector<int> input){
 
         //The candidate is the current item at i combined with all the items it can divide in the subproblem
         vector<int> cand(left);
-        for(int k = 0; k<right.size(); k++){
+        for(size_t k = 0; k<right.size(); k++){
             if(right.at(k)%cand.at(0)==0){
                 cand.push_back(right.at(k));
             }
