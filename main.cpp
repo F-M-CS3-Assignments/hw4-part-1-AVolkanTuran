@@ -99,5 +99,54 @@ int main() {
 	set<int> answerSet9(ans.begin(), ans.end());
 	assert(answerSet9 == soln);
 
+	//Test 10
+	values = {1, 3, 6, 13, 181};
+	ans = biggest_divisible_conglomerate(values);
+	cout << "input: " << vec_to_string(values) << endl;
+	cout << "output: " << vec_to_string(ans) << endl << endl;
+	soln = {1, 3, 6};
+	set<int> answerSet10(ans.begin(), ans.end());
+	assert(answerSet10 == soln);
+
+	//Test 11
+	values = {0, 1, 2, 4, 8};
+	ans = biggest_divisible_conglomerate(values);
+	cout << "input: " << vec_to_string(values) << endl;
+	cout << "output: " << vec_to_string(ans) << endl << endl;
+	soln = {1, 2, 4, 8};
+	set<int> answerSet11(ans.begin(), ans.end());
+	assert(answerSet11 == soln);
+
+	//Test 12
+	values = {12, 6, 3, 24, 18, 72, 36, 48};
+	ans = biggest_divisible_conglomerate(values);
+	cout << "input: " << vec_to_string(values) << endl;
+	cout << "output: " << vec_to_string(ans) << endl << endl;
+	soln = {3, 6, 18, 36, 72};
+	set<int> answerSet12(ans.begin(), ans.end());
+	first = (answerSet12 == soln);
+	soln = {3, 6, 12, 24, 48};
+	second = (answerSet12 == soln);	
+	assert(first || second);
+
+	//Test 13
+	values = {56, 3, 7, 14, 25, 50, 10, 2, 5, 4, 1, 28, 30, 60, 120};
+	ans = biggest_divisible_conglomerate(values);
+	cout << "input: " << vec_to_string(values) << endl;
+	cout << "output: " << vec_to_string(ans) << endl << endl;
+	soln = {1, 2, 10, 30, 60, 120};
+	set<int> answerSet13(ans.begin(), ans.end());
+	assert(answerSet13 == soln);
+
+
+	//Test 14
+	values = {100, 25, 5, 2, 10, 50, 200, 400, 800, 1600};
+	ans = biggest_divisible_conglomerate(values);
+	cout << "input: " << vec_to_string(values) << endl;
+	cout << "output: " << vec_to_string(ans) << endl << endl;
+	soln = {2, 10, 50, 100, 200, 400, 800, 1600};
+	set<int> answerSet14(ans.begin(), ans.end());
+	assert(answerSet14 == soln);
+
 	return 0;
 }

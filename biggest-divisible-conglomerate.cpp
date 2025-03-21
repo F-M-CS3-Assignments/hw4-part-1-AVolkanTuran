@@ -22,9 +22,12 @@ string vec_to_string(vector<int> v){
 
 //Simple selection sort to make it easier to check the divisibility requirement and give the answer in an nice sorted manner
 void selection_sort(vector<int>& input){
-    for(unsigned int i = 0; i<input.size()-1; i++){
+    if(input.size()==0){
+        return;
+    }
+    for(int i = 0; i<input.size()-1; i++){
         int minIndex = i;
-        for(unsigned int j = i+1; j<input.size(); j++){
+        for(int j = i+1; j<input.size(); j++){
             if(input.at(j)<input.at(minIndex)){
                 minIndex = j;
             }
@@ -36,45 +39,68 @@ void selection_sort(vector<int>& input){
 }
 
 
-//Helper function to find the biggest list, takes in reference values so that it can update the biggest list and the current list
-//i is used as an index to go through every element in the input, the recursion only terminates when it reaches the end of the input
-void biggest_divisible_conglomerate_finder(vector<int>& input, vector<int>& biggest, vector<int>& curr, int i){
-
-    //Updates the biggest list if the current is bigger than the previous biggest
-    if(curr.size()>biggest.size()){
-        biggest = curr;
-    }
-
-    //When all the elements in the input are checked, it terminates the function
-    if(i < 0){
-        return;
-    }
-    
-    //If current is empty, or if the element we are checking to use divides the next element in the conglomerate
-    //We have two options, either add it or not add it
-    if(curr.empty() || curr.at(0)%input.at(i) == 0){
-        //First we use the element and call the recursive function with the added version
-        curr.insert(curr.begin(), input.at(i));
-        biggest_divisible_conglomerate_finder(input, biggest, curr, i-1);
-        //Then we remove it so we can call the lose it version because it might end up giving a bigger conglomerate
-        curr.erase(curr.begin());
-    }
-
-    //Calls the recursive function for the lose it case
-    biggest_divisible_conglomerate_finder(input, biggest, curr, i-1);
-}
-
-vector<int> biggest_divisible_conglomerate(vector<int> input){
+//Helper function to find the biggest list
+vector<int> biggest_divisible_conglomerate_finder(vector<int> input){
+    //Base case where the input size is less than or equal to 1
     if(input.size()<=1){
         return input;
     }
 
-    //Sorts the input to make the divisibility requirement check easier
-    //Because the added element would only be needed to compare the next element in the conglomerate
-    //If the current element is divisible with the next element it is automatically divisible by the rest of them in a sorted list
-    selection_sort(input);
+    //If there are any zeros, removes them because they can't divide any number
+    if(input.at(0)==0){
+        vector<int> noZeroInput(input.begin()+1, input.end());
+        return biggest_divisible_conglomerate_finder(noZeroInput);
+    }
 
-    vector<int> curr, biggest;
-    biggest_divisible_conglomerate_finder(input, biggest, curr, input.size()-1);
-    return biggest;
+    //Creates a candidates vector to keep track of the possible conglomerates
+    vector<vector<int>> candidates;
+
+    for(unsigned int i = 0; i<input.size(); i++){
+        vector<int> left = {input.at(i)};
+
+        //Finds the position of the next number divisible the current element we are checking at i
+        int j = i+1;
+        while(j<input.size() && input.at(j)%input.at(i)!=0){
+            j++;
+        }
+
+        //If such an item exists, create a subproblem starting from that item, otherwise right is just an empty vector
+        vector<int> right;
+        if(j<input.size()){
+            vector<int> rightSubVector(input.begin()+j, input.end());
+            right = biggest_divisible_conglomerate_finder(rightSubVector);
+        }
+
+        //The candidate is the current item at i combined with all the items it can divide in the subproblem
+        vector<int> cand(left);
+        for(int k = 0; k<right.size(); k++){
+            if(right.at(k)%cand.at(0)==0){
+                cand.push_back(right.at(k));
+            }
+        }
+
+        //Adds the candidate to the possible candidates list
+        candidates.push_back(cand);
+    }
+
+    //Finds the index for the bdc
+    unsigned int maxSizeIndex = 0;
+    for(unsigned int i = 1; i<candidates.size(); i++){
+        if(candidates.at(i).size() > candidates.at(maxSizeIndex).size()){
+            maxSizeIndex = i;
+        }
+    }
+    
+    //If there are no candidates, returns a vector consisting of the largest value in the input, otherwise returns the bdc
+    if(candidates.empty()){
+        return {input.back()};
+    }
+    return candidates.at(maxSizeIndex);
+}
+
+vector<int> biggest_divisible_conglomerate(vector<int> input){
+    //Sorts the input because it makes finding the bdc much easier
+    selection_sort(input);
+    //Finds the bdc
+    return biggest_divisible_conglomerate_finder(input);
 }
